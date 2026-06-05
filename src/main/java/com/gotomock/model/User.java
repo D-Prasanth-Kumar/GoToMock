@@ -1,6 +1,10 @@
 package com.gotomock.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.Normalized;
 
 @Entity
 @Table(name = "users")
@@ -10,14 +14,21 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Username cannot be blank")
+    @Size(min = 3, max = 30, message = "Username must be between 3 and 30 characters")
     @Column(unique = true, nullable = false)
     private String username;
 
+    @NotBlank(message = "Name cannot be blank")
     private String name;
 
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Please provide a valid email address")
     @Column(unique = true, nullable = false)
     private String email;
 
+    @NotBlank(message = "Password cannot be blank")
+    @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 
     private String skills;

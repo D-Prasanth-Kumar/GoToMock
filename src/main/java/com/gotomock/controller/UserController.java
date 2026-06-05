@@ -1,16 +1,19 @@
 package com.gotomock.controller;
 
+import com.gotomock.dto.UserPatchDTO;
 import com.gotomock.model.User;
 import com.gotomock.service.UserService;
+import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     private UserService userService;
@@ -21,15 +24,28 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        try {
-            User savedUser = userService.registerUser(user);
+    public ResponseEntity<User> registerUser(@Valid @RequestBody User user) {
+        User savedUser = userService.registerUser(user);
 
-            return ResponseEntity.ok(savedUser);
-        } catch (RuntimeException e) {
+        return ResponseEntity.ok(savedUser);
+    }
 
-            return ResponseEntity.badRequest().body(null);
-        }
+    @GetMapping("/available")
+    public List<User> getAvailableUsers() {
+        return userService.getAllAvailableUsers();
+    }
+
+    @GetMapping("/search")
+    public List<User> searchBySkill(@RequestParam String skill) {
+        return userService.searchUsersBySkill(skill);
+    }
+
+    @PatchMapping("/partial_update/{id}")
+    public ResponseEntity<User> patchProfile(@PathVariable Long id, @RequestBody UserPatchDTO patchData) {
+
+        User updatedUser = userService.patchUserProfile(id, patchData);
+
+        return ResponseEntity.ok(updatedUser);
     }
 
 }
