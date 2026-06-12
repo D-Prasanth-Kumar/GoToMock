@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.Normalized;
 
+/**
+ * Core domain entity representing a registered platform user.
+ * This class maps directly to the 'users' table in MySQL via Hibernate.
+ */
 @Entity
 @Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +34,6 @@ public class User {
     private String password;
 
     private String skills;
-
     private boolean isVisible;
 
     // Default constructor with isVisible 'true'

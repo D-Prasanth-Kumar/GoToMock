@@ -10,7 +10,6 @@ import java.util.List;
 
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
 
     @Autowired
@@ -19,20 +18,19 @@ public class UserService {
     }
 
     public User registerUser(User user) {
-
-        if(userRepository.existsByUsername(user.getUsername())) {
+        if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("Username is already taken!");
         }
+
         return userRepository.save(user);
     }
 
     public List<User> getAllAvailableUsers() {
-
         return userRepository.findByIsVisibleTrue();
     }
 
     public List<User> searchUsersBySkill(String skill) {
-        if(skill == null || skill.isEmpty()) {
+        if (skill == null || skill.isEmpty()) {
             return userRepository.findByIsVisibleTrue();
         }
 
@@ -43,15 +41,15 @@ public class UserService {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
-        if(patchData.getName() != null) {
+        if (patchData.getName() != null) {
             existingUser.setName(patchData.getName());
         }
 
-        if(patchData.getSkills() != null) {
+        if (patchData.getSkills() != null) {
             existingUser.setSkills(patchData.getSkills());
         }
 
-        if(patchData.getIsVisible() != null) {
+        if (patchData.getIsVisible() != null) {
             existingUser.setVisible(patchData.getIsVisible());
         }
 

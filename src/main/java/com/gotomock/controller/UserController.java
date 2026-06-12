@@ -4,7 +4,6 @@ import com.gotomock.dto.UserPatchDTO;
 import com.gotomock.model.User;
 import com.gotomock.service.UserService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,6 @@ import java.util.List;
 @RequestMapping("/users")
 @CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
-
     private UserService userService;
 
     @Autowired
@@ -42,10 +40,8 @@ public class UserController {
 
     @PatchMapping("/partial_update/{id}")
     public ResponseEntity<User> patchProfile(@PathVariable Long id, @RequestBody UserPatchDTO patchData) {
-
         User updatedUser = userService.patchUserProfile(id, patchData);
 
         return ResponseEntity.ok(updatedUser);
     }
-
 }

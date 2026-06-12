@@ -1,7 +1,6 @@
 package com.gotomock.dto;
 
 public class UserPatchDTO {
-
     private String name;
     private String skills;
     private Boolean isVisible;
