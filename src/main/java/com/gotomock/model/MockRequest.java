@@ -2,7 +2,6 @@ package com.gotomock.model;
 
 import com.gotomock.enums.RequestStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 /**
