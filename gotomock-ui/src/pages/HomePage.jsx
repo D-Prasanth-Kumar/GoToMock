@@ -5,9 +5,15 @@ function HomePage() {
         <nav className="navbar">
             <h1 className="logo">GoToMock</h1>
 
-            <Link to="/register" className="register-btn">
-                Register
-            </Link>
+            <div className="auth-actions">
+                <Link to="/register" className="auth-btn">
+                    Register
+                </Link>
+
+                <Link to="/login" className="auth-btn">
+                    Login
+                </Link>
+            </div>
         </nav>
     );
 }

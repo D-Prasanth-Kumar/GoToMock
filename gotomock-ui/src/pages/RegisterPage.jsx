@@ -40,12 +40,12 @@ function RegisterPage() {
     }
 
     return (
-        <div className="register-container">
+        <div className="auth-container">
             <h1>Register</h1>
 
             {message && <p>{message}</p>}
 
-            <form className="register-form" onSubmit={handleSubmit}>
+            <form className="auth-form" onSubmit={handleSubmit}>
 
                 <label>Username</label>
                 <input 

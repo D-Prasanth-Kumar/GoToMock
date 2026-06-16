@@ -14,7 +14,7 @@
     font-size: 28px;
 }
 
-.register-btn {
+.auth-btn {
     padding: 10px 20px;
 
     border: none;
@@ -27,29 +27,29 @@
     cursor: pointer;
 }
 
-.register-container {
+.auth-container {
     padding: 50px 500px;
 }
 
-.register-container h1 {
+.auth-container h1 {
     text-align: center;
     margin-bottom: 25px;
 }
 
-.register-form {
+.auth-form {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.register-form input {
+.auth-form input {
     padding: 10px;
 
     border: 1px solid #d1d5db;
     border-radius: 6px;
 }
 
-.register-form button {
+.auth-form button {
     margin-top: 10px;
 
     padding: 12px;
@@ -61,4 +61,9 @@
     color: white;
 
     cursor: pointer;
+}
+
+.auth-actions {
+    display: flex;
+    gap: 12px;
 }

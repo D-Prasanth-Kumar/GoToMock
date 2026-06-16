@@ -21,13 +21,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@Valid @RequestBody User user) {
-        User savedUser = userService.registerUser(user);
-
-        return ResponseEntity.ok(savedUser);
-    }
-
     @GetMapping("/available")
     public List<User> getAvailableUsers() {
         return userService.getAllAvailableUsers();
