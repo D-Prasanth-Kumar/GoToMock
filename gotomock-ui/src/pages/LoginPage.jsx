@@ -32,7 +32,7 @@ function LoginPage() {
                 data.token
             );
 
-            navigate("/");
+            navigate("/dashboard");
         } catch (error) {
             console.error(error);
 

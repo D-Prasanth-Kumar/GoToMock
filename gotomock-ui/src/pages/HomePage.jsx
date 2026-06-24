@@ -1,20 +1,38 @@
-import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import HeroSection from "../components/sections/HeroSection";
+import InterviewTracksSection from "../components/sections/InterviewTracksSection";
+import FeaturesSection from "../components/sections/FeaturesSection";
+import AIInterviewSection from "../components/sections/AIInterviewSection";
+import StudyHubSection from "../components/sections/StudyHubSection";
+import FAQSection from "../components/sections/FAQSection";
+import Footer from "../components/Footer";
+import PageWrapper from "../components/PageWrapper";
 
 function HomePage() {
     return (
-        <nav className="navbar">
-            <h1 className="logo">GoToMock</h1>
+        <>
+        
+            <PageWrapper>
 
-            <div className="auth-actions">
-                <Link to="/register" className="auth-btn">
-                    Register
-                </Link>
+                <Navbar />
 
-                <Link to="/login" className="auth-btn">
-                    Login
-                </Link>
-            </div>
-        </nav>
+                <HeroSection />
+
+                <InterviewTracksSection />
+
+                <FeaturesSection />
+
+                <AIInterviewSection />
+
+                <StudyHubSection />
+
+                <FAQSection />
+
+                <Footer />
+
+            </PageWrapper>
+
+        </>
     );
 }
 

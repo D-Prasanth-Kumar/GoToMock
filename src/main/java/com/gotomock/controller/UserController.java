@@ -6,6 +6,7 @@ import com.gotomock.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,14 @@ public class UserController {
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<User> getCurrentUser(Authentication authentication) {
+        String username = authentication.getName();
+        User user = userService.getUserByUsername(username);
+
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/available")
