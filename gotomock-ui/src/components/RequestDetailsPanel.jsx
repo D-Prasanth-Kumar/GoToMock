@@ -1,10 +1,22 @@
 import { acceptRequest, rejectRequest } from "../api/requestApi";
 
-function RequestDetailsPanel({
-    selectedRequest,
-    setSelectedRequest,
-    onClose
-}) {
+function getInitials(name) {
+    if (!name) return "?";
+    return name
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+}
+
+function getStatusClass(status) {
+    if (status === "ACCEPTED") return "status-badge-accepted";
+    if (status === "REJECTED") return "status-badge-rejected";
+    return "status-badge-pending";
+}
+
+function RequestDetailsPanel({ selectedRequest, setSelectedRequest, onClose }) {
     async function handleAccept() {
         try {
             const response = await acceptRequest(selectedRequest.id);
@@ -15,7 +27,6 @@ function RequestDetailsPanel({
 
             const updatedRequest = await response.json();
             setSelectedRequest(updatedRequest);
-            
             alert("Request accepted");
         } catch (error) {
             console.error(error);
@@ -42,54 +53,42 @@ function RequestDetailsPanel({
 
     return (
         <aside className="peer-details-panel">
-
-            <button
-                className="close-panel-btn"
-                onClick={onClose}
-            >
+            <button className="close-panel-btn" onClick={onClose}>
                 ×
             </button>
 
-            <h2>{selectedRequest.sender.name}</h2>
-
-            <p>{selectedRequest.sender.skills}</p>
-
-            <div className="profile-section">
-
-                <h3>Message</h3>
-
-                <p>{selectedRequest.message}</p>
-
+            <div className="panel-user-header">
+                <div className="user-avatar">
+                    {getInitials(selectedRequest.sender.name)}
+                </div>
+                <div>
+                    <h2>{selectedRequest.sender.name}</h2>
+                    <p>{selectedRequest.sender.skills}</p>
+                </div>
             </div>
 
             <div className="profile-section">
+                <h3>Message</h3>
+                <p>{selectedRequest.message || "No message provided."}</p>
+            </div>
 
+            <div className="profile-section">
                 <h3>Status</h3>
-
-                <p>{selectedRequest.status}</p>
-
+                <span className={`status-badge ${getStatusClass(selectedRequest.status)}`}>
+                    {selectedRequest.status}
+                </span>
             </div>
 
             {selectedRequest.status === "PENDING" && (
-
-                <div className="result-actions">
-
-                    <button
-                        onClick={handleAccept}
-                    >
+                <div className="panel-actions">
+                    <button className="btn btn-success" onClick={handleAccept}>
                         Accept
                     </button>
-
-                    <button
-                        onClick={handleReject}
-                    >
+                    <button className="btn btn-danger" onClick={handleReject}>
                         Reject
                     </button>
-
                 </div>
-
             )}
-
         </aside>
     );
 }

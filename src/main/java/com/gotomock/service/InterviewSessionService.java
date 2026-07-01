@@ -1,7 +1,6 @@
 package com.gotomock.service;
 
 import com.gotomock.enums.InterviewSessionStatus;
-import com.gotomock.enums.RequestStatus;
 import com.gotomock.model.InterviewRequest;
 import com.gotomock.model.InterviewSession;
 import com.gotomock.model.User;
@@ -24,6 +23,10 @@ public class InterviewSessionService {
     }
 
     public InterviewSession createSession(InterviewRequest request) {
+        if (request == null) {
+            throw new RuntimeException("Interview request cannot be null.");
+        }
+
         InterviewSession session = new InterviewSession();
         session.setRequest(request);
         session.setCandidate(request.getSender());

@@ -1,7 +1,9 @@
+import { API_BASE_URL } from "../config/apiConfig";
+
 export async function getNotifications() {
     const token = localStorage.getItem("token");
     const response = await fetch(
-        "http://localhost:8081/notificatoins",
+        `${API_BASE_URL}/notifications`,
         {
             method: "GET",
             headers: {

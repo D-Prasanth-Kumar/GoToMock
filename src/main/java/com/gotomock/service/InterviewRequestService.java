@@ -38,6 +38,24 @@ public class InterviewRequestService {
                         .findById(requestDTO.getReceiverId())
                         .orElseThrow(() -> new RuntimeException("Receiver not found"));
 
+        if (!receiver.isVisible()) {
+            throw new RuntimeException("This user is not accepting interview requests.");
+        }
+
+        if (sender.getId().equals(receiver.getId())) {
+            throw new RuntimeException("You cannot send a request to yourself");
+        }
+
+        boolean alreadyPending = interviewRequestRepository.existsBySenderAndReceiverAndStatus(
+                                        sender,
+                                        receiver,
+                                        RequestStatus.PENDING
+                                );
+
+        if (alreadyPending) {
+            throw new RuntimeException("A Pending request already exists.");
+        }
+
         InterviewRequest request = new InterviewRequest();
         request.setSender(sender);
         request.setReceiver(receiver);
@@ -61,9 +79,22 @@ public class InterviewRequestService {
         return interviewRequestRepository.findBySender(sender);
     }
 
-    public InterviewRequest acceptRequest(Long requestId) {
+    public InterviewRequest acceptRequest(Long requestId, String username) {
         InterviewRequest request = interviewRequestRepository.findById(requestId)
                                                              .orElseThrow(() ->new RuntimeException("Request not found"));
+
+        if (!request.getReceiver().getUsername().equals(username)) {
+            throw new RuntimeException("You are not allowed to process this request.");
+        }
+
+        if (request.getStatus() != RequestStatus.PENDING) {
+            throw new RuntimeException("This request has already been processed.");
+        }
+
+        if (request.getSender().getId().equals(request.getReceiver().getId())) {
+            throw new RuntimeException("Invalid Interview request.");
+        }
+
         request.setStatus(RequestStatus.ACCEPTED);
         notificationService.createNotification(request.getSender(),
                                                request.getReceiver().getName()
@@ -73,9 +104,18 @@ public class InterviewRequestService {
         return interviewRequestRepository.save(request);
     }
 
-    public InterviewRequest rejectRequest(Long requestId) {
+    public InterviewRequest rejectRequest(Long requestId, String username) {
         InterviewRequest request = interviewRequestRepository.findById(requestId)
                                                              .orElseThrow(() -> new RuntimeException("Request not found"));
+
+        if (!request.getReceiver().getUsername().equals(username)) {
+            throw new RuntimeException("You are not allowed to process this request.");
+        }
+
+        if (request.getStatus() != RequestStatus.PENDING) {
+            throw new RuntimeException("This request has already been processed.");
+        }
+
         request.setStatus(RequestStatus.REJECTED);
         notificationService.createNotification(request.getSender(),
                                                request.getSender().getName()

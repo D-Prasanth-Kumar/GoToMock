@@ -1,7 +1,9 @@
+import { API_BASE_URL } from "../config/apiConfig";
+
 export async function registerUser(userData) {
     
     const response = await fetch(
-        "http://localhost:8081/auth/register",
+        `${API_BASE_URL}/auth/register`,
         {
             method: "POST",
             headers: {
@@ -19,7 +21,7 @@ export async function getAvailableUsers() {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-        "http://localhost:8081/users/available",
+        `${API_BASE_URL}/users/available`,
         {
             method: "GET",
             headers: {
@@ -36,7 +38,7 @@ export async function searchUsers(skill) {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-        `http://localhost:8081/users/search?skill=${skill}`,
+        `${API_BASE_URL}/users/search?skill=${skill}`,
         {
             method: "GET",
             headers: {

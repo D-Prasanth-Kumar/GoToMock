@@ -1,7 +1,6 @@
 package com.gotomock.model;
 
 import com.gotomock.enums.InterviewSessionStatus;
-import com.gotomock.enums.RequestStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

@@ -1,8 +1,10 @@
+import { API_BASE_URL } from "../config/apiConfig";
+
 export async function sendInterviewRequest(requestData) {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-        "http://localhost:8081/requests",
+        `${API_BASE_URL}/requests`,
         {
             method: "POST",
             headers: {
@@ -20,7 +22,7 @@ export async function getReceivedRequests() {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-        "http://localhost:8081/requests/received",
+        `${API_BASE_URL}/requests/received`,
         {
             method: "GET",
             headers: {
@@ -35,7 +37,7 @@ export async function getReceivedRequests() {
 export async function acceptRequest(requestId) {
     const token = localStorage.getItem("token");
     const response = await fetch(
-        `http://localhost:8081/requests/${requestId}/accept`,
+        `${API_BASE_URL}/requests/${requestId}/accept`,
         {
             method: "PATCH",
             headers: {
@@ -50,7 +52,7 @@ export async function acceptRequest(requestId) {
 export async function rejectRequest(requestId) {
     const token = localStorage.getItem("token");
     const response = await fetch(
-        `http://localhost:8081/requests/${requestId}/reject`,
+        `${API_BASE_URL}/requests/${requestId}/reject`,
         {
             method: "PATCH",
             headers: {

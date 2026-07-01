@@ -35,21 +35,33 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public List<User> getAllAvailableUsers() {
-        return userRepository.findByIsVisibleTrue();
+    public List<User> getAllAvailableUsers(String username) {
+        User currentUser = getUserByUsername(username);
+
+        return userRepository.findByIsVisibleTrue()
+                             .stream()
+                             .filter(user -> !user.getId().equals(currentUser.getId()))
+                             .toList();
     }
 
-    public List<User> searchUsersBySkill(String skill) {
-        if (skill == null || skill.isEmpty()) {
-            return userRepository.findByIsVisibleTrue();
+    public List<User> searchUsersBySkill(String skill, String username) {
+        User currentUser = getUserByUsername(username);
+
+        List<User> users;
+
+        if (skill == null || skill.isBlank()) {
+            users = userRepository.findByIsVisibleTrue();
+        } else {
+            users = userRepository.findBySkillsContainingIgnoreCaseAndIsVisibleTrue(skill);
         }
 
-        return userRepository.findBySkillsContainingIgnoreCaseAndIsVisibleTrue(skill);
+        return users.stream()
+                .filter(user -> !user.getId().equals(currentUser.getId()))
+                .toList();
     }
 
-    public User patchUserProfile(Long id, UserPatchDTO patchData) {
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    public User patchCurrentUser(String username, UserPatchDTO patchData) {
+        User existingUser = getUserByUsername(username);
 
         if (patchData.getName() != null) {
             existingUser.setName(patchData.getName());

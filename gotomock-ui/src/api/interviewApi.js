@@ -1,8 +1,10 @@
+import { API_BASE_URL } from "../config/apiConfig";
+
 export async function getMySessions() {
     const token = localStorage.getItem("token");
 
     return fetch(
-        "http://localhost:8081/interviews/my-sessions",
+        `${API_BASE_URL}/interviews/my-sessions`,
         {
             method: "GET",
             headers: {

@@ -31,18 +31,21 @@ public class UserController {
     }
 
     @GetMapping("/available")
-    public List<User> getAvailableUsers() {
-        return userService.getAllAvailableUsers();
+    public List<User> getAvailableUsers(Authentication authentication) {
+        return userService.getAllAvailableUsers(authentication.getName());
     }
 
     @GetMapping("/search")
-    public List<User> searchBySkill(@RequestParam String skill) {
-        return userService.searchUsersBySkill(skill);
+    public List<User> searchBySkill(@RequestParam String skill,
+                                    Authentication authentication) {
+        return userService.searchUsersBySkill(skill, authentication.getName());
     }
 
     @PatchMapping("/partial_update/{id}")
-    public ResponseEntity<User> patchProfile(@PathVariable Long id, @RequestBody UserPatchDTO patchData) {
-        User updatedUser = userService.patchUserProfile(id, patchData);
+    public ResponseEntity<User> patchProfile(@RequestBody UserPatchDTO patchData,
+                                             Authentication authentication) {
+        User updatedUser = userService.patchCurrentUser(authentication.getName(),
+                                                        patchData);
 
         return ResponseEntity.ok(updatedUser);
     }

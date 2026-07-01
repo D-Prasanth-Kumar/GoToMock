@@ -3,7 +3,6 @@ package com.gotomock.controller;
 import com.gotomock.dto.SendRequestDTO;
 import com.gotomock.model.InterviewRequest;
 import com.gotomock.service.InterviewRequestService;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -38,12 +37,14 @@ public class InterviewRequestController {
     }
 
     @PatchMapping("/{id}/accept")
-    public ResponseEntity<InterviewRequest> acceptRequest(@PathVariable Long id) {
-        return ResponseEntity.ok(interviewRequestService.acceptRequest(id));
+    public ResponseEntity<InterviewRequest> acceptRequest(@PathVariable Long id,
+                                                          Authentication authentication) {
+        return ResponseEntity.ok(interviewRequestService.acceptRequest(id, authentication.getName()));
     }
 
     @PatchMapping("/{id}/reject")
-    public ResponseEntity<InterviewRequest> rejectRequest(@PathVariable Long id) {
-        return ResponseEntity.ok(interviewRequestService.rejectRequest(id));
+    public ResponseEntity<InterviewRequest> rejectRequest(@PathVariable Long id,
+                                                          Authentication authentication) {
+        return ResponseEntity.ok(interviewRequestService.rejectRequest(id, authentication.getName()));
     }
 }

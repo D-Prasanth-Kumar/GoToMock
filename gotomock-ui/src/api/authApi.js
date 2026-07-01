@@ -1,7 +1,9 @@
+import { API_BASE_URL } from "../config/apiConfig";
+
 export async function loginUser(loginData) {
 
     const response = await fetch(
-        "http://localhost:8081/auth/login",
+        `${API_BASE_URL}/auth/login`,
         {
             method: "POST",
             headers: {
