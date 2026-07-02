@@ -49,15 +49,19 @@ function InterviewRoomPage() {
             setLocalStream(stream);
             localStreamRef.current = stream;
 
-            if (peerConnectionRef.current) {
+            const pc = peerConnectionRef.current;
+            if (pc) {
                 stream.getTracks().forEach(track => {
-                    const alreadyAdded = peerConnectionRef.current
-                                                          .getSenders()
-                                                          .some(sender => sender.track === track);
+                    const alreadyAdded = pc.getSenders().some(s => s.track === track);
                     if (!alreadyAdded) {
-                        peerConnectionRef.current.addTrack(track, stream);
+                        pc.addTrack(track, stream);
                     }
                 });
+
+
+                if (pc.signalingState === "stable" && pc.getSenders().length > 0) {
+                    await createOfferWithStream(stream);
+                }
             }
 
             setCameraEnabled(true);
@@ -250,6 +254,12 @@ function InterviewRoomPage() {
     const createOffer = async () => {
         if (!peerConnectionRef.current) return;
         if (!localStreamRef.current) return;
+        await createOfferWithStream(localStreamRef.current);
+    };
+
+    const createOfferWithStream = async (stream) => {
+        if (!peerConnectionRef.current) return;
+        if (!stream) return;
 
         const offer = await peerConnectionRef.current.createOffer();
         await peerConnectionRef.current.setLocalDescription(offer);
