@@ -70,7 +70,7 @@ function InterviewRoomPage() {
                     }
                 });
 
-                if (pc.signalingState === "stable" && pc.getSenders().length > 0) {
+                if (pc.signalingState === "stable" && pc.getSenders().filter(s => s.track).length > 0) {
                     await createOfferWithStream(stream);
                 }
             }
@@ -248,6 +248,7 @@ function InterviewRoomPage() {
 
         peerConnection.onicecandidate = (event) => {
             if (!event.candidate) return;
+            if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) return;
 
             socketRef.current.send(JSON.stringify({
                 type: "ICE_CANDIDATE",
@@ -288,6 +289,7 @@ function InterviewRoomPage() {
     const createOfferWithStream = async (stream) => {
         if (!peerConnectionRef.current) return;
         if (!stream) return;
+        if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) return;
 
         const offer = await peerConnectionRef.current.createOffer();
         await peerConnectionRef.current.setLocalDescription(offer);
