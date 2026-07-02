@@ -41,6 +41,14 @@ function InterviewRoomPage() {
 
     const startCamera = async () => {
         try {
+            const existing = localStreamRef.current;
+            if (existing) {
+                existing.getVideoTracks().forEach(t => { t.enabled = true; });
+                if (localVideoRef.current) localVideoRef.current.srcObject = existing;
+                setCameraEnabled(true);
+                return;
+            }
+
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: true
@@ -48,6 +56,10 @@ function InterviewRoomPage() {
 
             setLocalStream(stream);
             localStreamRef.current = stream;
+
+            if (localVideoRef.current) {
+                localVideoRef.current.srcObject = stream;
+            }
 
             const pc = peerConnectionRef.current;
             if (pc) {
@@ -58,8 +70,7 @@ function InterviewRoomPage() {
                     }
                 });
 
-
-                if (pc.signalingState === "stable" && pc.getSenders().length > 0) {
+                if (pc.signalingState === "stable" && pc.getSenders().filter(s => s.track).length > 0) {
                     await createOfferWithStream(stream);
                 }
             }
@@ -76,14 +87,12 @@ function InterviewRoomPage() {
         const stream = localStreamRef.current;
         if (!stream) return;
 
-        stream.getTracks().forEach(track => track.stop());
+        stream.getVideoTracks().forEach(track => { track.enabled = false; });
 
         if (localVideoRef.current) {
             localVideoRef.current.srcObject = null;
         }
 
-        setLocalStream(null);
-        localStreamRef.current = null;
         setCameraEnabled(false);
     };
 
@@ -239,6 +248,7 @@ function InterviewRoomPage() {
 
         peerConnection.onicecandidate = (event) => {
             if (!event.candidate) return;
+            if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) return;
 
             socketRef.current.send(JSON.stringify({
                 type: "ICE_CANDIDATE",
@@ -279,6 +289,7 @@ function InterviewRoomPage() {
     const createOfferWithStream = async (stream) => {
         if (!peerConnectionRef.current) return;
         if (!stream) return;
+        if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) return;
 
         const offer = await peerConnectionRef.current.createOffer();
         await peerConnectionRef.current.setLocalDescription(offer);
