@@ -51,7 +51,7 @@ function Navbar() {
                 )}
 
                 <a 
-                    href="github-url"
+                    href="https://github.com/D-Prasanth-Kumar/GoToMock"
                     target="_blank"
                     rel="noreferrer"
                     className="github-btn"
