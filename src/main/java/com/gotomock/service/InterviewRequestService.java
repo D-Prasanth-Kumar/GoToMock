@@ -1,6 +1,7 @@
 package com.gotomock.service;
 
 import com.gotomock.dto.SendRequestDTO;
+import com.gotomock.enums.InterviewType;
 import com.gotomock.enums.RequestStatus;
 import com.gotomock.model.InterviewRequest;
 import com.gotomock.model.User;
@@ -99,7 +100,10 @@ public class InterviewRequestService {
         notificationService.createNotification(request.getSender(),
                                                request.getReceiver().getName()
                                                        + " accepted your interview request.");
-        interviewSessionService.createSession(request);
+        interviewSessionService.createSession(request.getSender(),
+                                              request.getReceiver(),
+                                              request,
+                                              InterviewType.HUMAN);
 
         return interviewRequestRepository.save(request);
     }

@@ -1,6 +1,7 @@
 package com.gotomock.model;
 
 import com.gotomock.enums.InterviewSessionStatus;
+import com.gotomock.enums.InterviewType;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,9 @@ public class InterviewSession {
 
     @OneToOne
     private InterviewRequest request;
+
+    @Enumerated(EnumType.STRING)
+    private InterviewType interviewType;
 
     @Enumerated(EnumType.STRING)
     private InterviewSessionStatus status;
@@ -59,6 +63,14 @@ public class InterviewSession {
 
     public void setRequest(InterviewRequest request) {
         this.request = request;
+    }
+
+    public InterviewType getInterviewType() {
+        return interviewType;
+    }
+
+    public void setInterviewType(InterviewType interviewType) {
+        this.interviewType = interviewType;
     }
 
     public InterviewSessionStatus getStatus() {
