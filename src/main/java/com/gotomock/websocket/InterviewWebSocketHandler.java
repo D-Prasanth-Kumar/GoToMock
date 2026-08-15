@@ -84,8 +84,19 @@ public class InterviewWebSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session,
                                      TextMessage message) throws Exception {
-        SignalMessage signalMessage = objectMapper.readValue(message.getPayload(),
-                                                             SignalMessage.class);
+        SignalMessage signalMessage;
+
+        try {
+            signalMessage = objectMapper.readValue(message.getPayload(), SignalMessage.class);
+        } catch (Exception e) {
+            System.out.println("Failed to parse message from session " + session.getId() + ": " + e.getMessage());
+            return;
+        }
+
+        if (signalMessage.getType() == null) {
+            System.out.println("Received message with null type from session " + session.getId());
+            return;
+        }
 
         switch (signalMessage.getType()) {
             case "JOIN":
@@ -112,9 +123,8 @@ public class InterviewWebSocketHandler extends TextWebSocketHandler {
             case "LEAVE":
                 handleLeave(session, signalMessage);
                 break;
-
             default:
-                System.out.println("Unknown message type");
+                System.out.println("Unknown message type: " + signalMessage.getType());
         }
     }
 
@@ -156,7 +166,32 @@ public class InterviewWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session,
                                       CloseStatus status) throws Exception {
         String username = (String) session.getAttributes().get("username");
+        Long sessionId = (Long) session.getAttributes().get("sessionId");
 
-        System.out.println(username + " disconnected.");
+        System.out.println(username + " disconnected. Status: " + status);
+
+        if (sessionId == null) return;
+
+        InterviewRoom room = roomManager.getRoom(sessionId);
+        if (room == null) return;
+
+        InterviewParticipant partner = room.getOtherParticipant(username);
+        room.removeParticipant(username);
+
+        if (partner != null) {
+            try {
+                SignalMessage response = new SignalMessage();
+                response.setType("PARTNER_LEFT");
+                response.setSessionId(sessionId);
+                sendMessage(partner.getSession(), response);
+            } catch (Exception e) {
+                System.out.println("Could not notify partner of disconnect: " + e.getMessage());
+            }
+        }
+
+        if (room.isEmpty()) {
+            roomManager.removeRoom(sessionId);
+            System.out.println("Room " + sessionId + " removed.");
+        }
     }
 }
