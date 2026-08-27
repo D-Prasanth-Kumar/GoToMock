@@ -13,3 +13,17 @@ export async function getMySessions() {
         }
     );
 }
+
+export async function getSessionById(sessionId) {
+    const token = localStorage.getItem("token");
+
+    return fetch(
+        `${API_BASE_URL}/interviews/${sessionId}`,
+        {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+}

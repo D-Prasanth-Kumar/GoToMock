@@ -51,4 +51,18 @@ public class InterviewSessionService {
 
         return sessions;
     }
+
+    public InterviewSession getSessionById(Long sessionId, String username) {
+        InterviewSession session = interviewSessionRepository.findById(sessionId)
+                .orElseThrow(() -> new RuntimeException("Session not found"));
+
+        boolean isParticipant = session.getCandidate().getUsername().equals(username)
+                || session.getInterviewer().getUsername().equals(username);
+
+        if (!isParticipant) {
+            throw new RuntimeException("Access denied");
+        }
+
+        return session;
+    }
 }

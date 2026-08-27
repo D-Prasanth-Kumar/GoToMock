@@ -4,6 +4,19 @@ import { Mic, MicOff, Video, VideoOff, MonitorUp, MonitorX, MessageSquare } from
 import InterviewHeader from "../components/interview/InterviewHeader";
 import VideoLayout from "../components/interview/VideoLayout";
 import { WS_BASE_URL } from "../config/apiConfig";
+import { getSessionById } from "../api/interviewApi";
+
+// Decode username from JWT stored in localStorage
+function getCurrentUsername() {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+    try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        return payload.sub;
+    } catch {
+        return null;
+    }
+}
 
 function InterviewRoomPage() {
     const { sessionId } = useParams();
@@ -14,12 +27,23 @@ function InterviewRoomPage() {
     const [screenSharing, setScreenSharing] = useState(false);
     const [micEnabled, setMicEnabled] = useState(true);
     const [localStream, setLocalStream] = useState(null);
+    // "candidate" | "interviewer" | null
+    const [myRole, setMyRole] = useState(null);
+    const [remoteUserName, setRemoteUserName] = useState("Remote");
 
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
     const socketRef = useRef(null);
     const peerConnectionRef = useRef(null);
     const localStreamRef = useRef(null);
+    const remoteStreamRef = useRef(null);
+
+    // Assign remote stream to video element whenever ref or stream becomes available
+    useEffect(() => {
+        if (remoteStreamRef.current && remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = remoteStreamRef.current;
+        }
+    }, [remoteCameraEnabled]);
 
     useEffect(() => {
         if (!localStream) return;
@@ -122,6 +146,7 @@ function InterviewRoomPage() {
 
         if (localVideoRef.current) localVideoRef.current.srcObject = null;
         if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
+        remoteStreamRef.current = null;
 
         if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
             socketRef.current.send(JSON.stringify({
@@ -259,6 +284,7 @@ function InterviewRoomPage() {
 
         peerConnection.ontrack = (event) => {
             const remoteStream = event.streams[0];
+            remoteStreamRef.current = remoteStream;
             if (remoteVideoRef.current) {
                 remoteVideoRef.current.srcObject = remoteStream;
             }
