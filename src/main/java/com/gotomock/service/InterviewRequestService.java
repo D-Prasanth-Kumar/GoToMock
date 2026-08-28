@@ -122,7 +122,7 @@ public class InterviewRequestService {
 
         request.setStatus(RequestStatus.REJECTED);
         notificationService.createNotification(request.getSender(),
-                                               request.getSender().getName()
+                                               request.getReceiver().getName()
                                                        + " rejected your interview request");
 
         return interviewRequestRepository.save(request);

@@ -12,8 +12,9 @@ function getInitials(name) {
 }
 
 function getStatusClass(status) {
-    if (status === "ACCEPTED") return "status-badge-accepted";
-    if (status === "REJECTED") return "status-badge-rejected";
+    if (status === "READY") return "status-badge-pending";
+    if (status === "IN_PROGRESS") return "status-badge-accepted";
+    if (status === "COMPLETED") return "status-badge-rejected";
     return "status-badge-pending";
 }
 

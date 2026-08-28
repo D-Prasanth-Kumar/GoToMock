@@ -1004,7 +1004,7 @@
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background: var(--color-white);
+  background: var(--color-bg-elevated);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
@@ -2204,6 +2204,13 @@
   }
 
   .sidebar-top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+  }
+
+  .sidebar-divider {
     display: none;
   }
 

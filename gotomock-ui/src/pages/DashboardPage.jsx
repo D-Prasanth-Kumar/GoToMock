@@ -249,9 +249,6 @@ function DashboardPage() {
                                                 ) : (
                                                     notifications.map((notification) => (
                                                         <div key={notification.id} className="notification-item">
-                                                            <div className="notification-title">
-                                                                {notification.title}
-                                                            </div>
                                                             <div className="notification-message">
                                                                 {notification.message}
                                                             </div>

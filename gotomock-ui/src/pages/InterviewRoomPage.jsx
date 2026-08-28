@@ -4,19 +4,6 @@ import { Mic, MicOff, Video, VideoOff, MonitorUp, MonitorX, MessageSquare } from
 import InterviewHeader from "../components/interview/InterviewHeader";
 import VideoLayout from "../components/interview/VideoLayout";
 import { WS_BASE_URL } from "../config/apiConfig";
-import { getSessionById } from "../api/interviewApi";
-
-// Decode username from JWT stored in localStorage
-function getCurrentUsername() {
-    const token = localStorage.getItem("token");
-    if (!token) return null;
-    try {
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        return payload.sub;
-    } catch {
-        return null;
-    }
-}
 
 function InterviewRoomPage() {
     const { sessionId } = useParams();
@@ -27,9 +14,6 @@ function InterviewRoomPage() {
     const [screenSharing, setScreenSharing] = useState(false);
     const [micEnabled, setMicEnabled] = useState(true);
     const [localStream, setLocalStream] = useState(null);
-    // "candidate" | "interviewer" | null
-    const [myRole, setMyRole] = useState(null);
-    const [remoteUserName, setRemoteUserName] = useState("Remote");
 
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
